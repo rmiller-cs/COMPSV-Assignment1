@@ -1,62 +1,54 @@
 from product_data import products
-# TODO: Step 1 - Print out the products to see the data that you are working with.
 
-
-
-# TODO: Step 2 - Create a list called customer_preferences and store the user preference in this list.
-
-
+# lets the user input their preferences and stores them
+customer_preferences = []
 response = ""
 while response != "N":
     print("Input a preference:")
     preference = input()
-    # Add the customer preference to the list
-
+    customer_preferences.append(preference)
     response = input("Do you want to add another preference? (Y/N): ").upper()
-  
-
-# TODO: Step 3 - Convert customer_preferences list to set to eliminate duplicates.
 
 
+# converts the preferences to a set to remove duplicates
+converted_preferences = set(customer_preferences)
 
-# TODO: Step 4 - Convert the product tags to sets in order to allow for faster comparisons.
+
+# converts the product tags to sets to allow for faster comparisons
 converted_products = []
+for product in products:
+    product["tags"] = set(product["tags"])
+    converted_products.append(product)
 
-
-
-
-# TODO: Step 5 - Write a function to calculate the number of matching tags
+# determines the number of mathching tags for a product
 def count_matches(product_tags, customer_tags):
-    '''
-    Args:
-        product_tags (set): A set of tags associated with a product.
-        customer_tags (set): A set of tags associated with the customer.
-    Returns:
-        int: The number of matching tags between the product and customer.
-    '''
-    pass
+    matches = product_tags.intersection(customer_tags)
+    return len(matches)
 
 
-
-
-# TODO: Step 6 - Write a function that loops over all products and returns a sorted list of matches
+# returns the products that match the customer's preferences
 def recommend_products(products, customer_tags):
-    '''
-    Args:
-        products (list): A list of product dictionaries.
-        customer_tags (set): A set of tags associated with the customer.
-    Returns:
-        list: A list of products containing product names and their match counts.
-    '''
-    pass
+    recommended_products = []
+    for product in products:
+        matches = count_matches(product["tags"], customer_tags)
+        if matches > 0:
+            recommended_products.append([product["name"], matches])
+    return recommended_products
 
 
-
-# TODO: Step 7 - Call your function and print the results
-
-
+# runs the function and prints recommended products
+print(recommend_products(converted_products, converted_preferences), sep="\n")
 
 
-# DESIGN MEMO (write below in a comment):
+# DESIGN MEMO:
 # 1. What core operations did you use (e.g., intersections, loops)? Why?
+# Loops were used for most of the functions in order to iterate over lists. 
+# A loop is used to iterate over each product and convert their tags into a set.
+# recommend_products iterates over each product to check if they match the customer's preferences.
+# An intersection is used in the count_matches function since it concisely filters which tags match the customer's preferences.
+#
 # 2. How might this code change if you had 1000+ products?
+# If there were significantly more products, I would consider adding additional options to the product recommendations.
+# One idea is an option to only suggesting products that match all recommendations 
+# in order to reduce the amount of products the consumer has to sift through.
+# Another thing I would change is sorting based on the amount of matching tags, since it is currently unsorted.
